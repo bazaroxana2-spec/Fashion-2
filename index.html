@@ -51,13 +51,17 @@ input.addEventListener("change", function () {
   if (!file) return;
 
   const reader = new FileReader();
+
   reader.onload = () => {
     preview.src = reader.result;
-    preview.classList.add("show");
-    uploadedImage = reader.result;
+    preview.classList.remove("illustrated"); // quita efecto anterior
+    preview.classList.add("show");            // la hace visible
+    uploadedImage = reader.result;             // guarda la imagen
   };
+
   reader.readAsDataURL(file);
 });
+
 
 // 2️⃣ Simular creación de ilustración
 button.addEventListener("click", function () {
@@ -74,6 +78,7 @@ button.addEventListener("click", function () {
     // OCULTAR loader
     loader.classList.add("hidden");
     preview.style.opacity = "1";
+    preview.classList.add("illustrated");
     button.disabled = false;
   }, 2500);
 });
@@ -97,6 +102,7 @@ button.addEventListener("click", function () {
 
 </body>
 </html>
+
 
 
 
