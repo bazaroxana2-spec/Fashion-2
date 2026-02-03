@@ -41,6 +41,7 @@ const input = document.getElementById("imageUpload");
 const preview = document.getElementById("preview");
 const button = document.getElementById("createBtn");
 const status = document.getElementById("status");
+const loader = document.getElementById("loader"); 
 
 let uploadedImage = null;
 
@@ -64,6 +65,18 @@ button.addEventListener("click", function () {
     alert("Por favor selecciona una imagen primero");
     return;
   }
+ // MOSTRAR loader
+  loader.classList.remove("hidden");
+  preview.style.opacity = "0.4";
+  button.disabled = true;
+
+  setTimeout(() => {
+    // OCULTAR loader
+    loader.classList.add("hidden");
+    preview.style.opacity = "1";
+    button.disabled = false;
+  }, 2500);
+});
 
   status.textContent = "Creando ilustración en acuarela...";
   status.classList.remove("hidden");
@@ -84,6 +97,7 @@ button.addEventListener("click", function () {
 
 </body>
 </html>
+
 
 
 
