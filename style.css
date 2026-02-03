@@ -17,6 +17,7 @@ body {
 }
 
 h1 {
+  animation: fadeUp 1s ease-out;
   font-family: 'Playfair Display', serif;
   font-size: 36px;
   margin-bottom: 20px;
@@ -42,11 +43,17 @@ button:hover {
   box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
 
+
 img {
   max-width: 100%;
   margin-top: 30px;
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease;
+}
+
+img:hover {
+  transform: scale(1.02);
 }
 @keyframes fadeUp {
   from {
