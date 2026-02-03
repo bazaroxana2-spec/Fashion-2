@@ -1,43 +1,73 @@
+/* Fondo general */
 body {
   margin: 0;
   min-height: 100vh;
+  background: #faf8f6;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #f6f6f6; /* gris elegante */
   font-family: 'Inter', sans-serif;
+  color: #333;
 }
 
-
-.container {
-  animation: fadeUp 0.8s ease-out;
-  width: 100%;
-  max-width: 720px;
+/* Tarjeta principal */
+.card {
   background: white;
-  padding: 48px;
-  border-radius: 20px;
-  box-shadow: 0 30px 60px rgba(0,0,0,0.12);
+  max-width: 720px;
+  width: 90%;
+  padding: 60px 50px;
+  border-radius: 24px;
   text-align: center;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.08);
+  animation: fadeUp 0.8s ease;
 }
 
+/* Título */
 h1 {
-  animation: fadeUp 1s ease-out;
   font-family: 'Playfair Display', serif;
   font-size: 34px;
-  margin-bottom: 30px;
-  color: #111;
+  margin-bottom: 16px;
 }
 
-p {
-  font-size: 18px;
-  color: #555;
+/* Subtítulo */
+.subtitle {
+  font-size: 16px;
+  color: #777;
+  margin-bottom: 40px;
 }
 
+/* Selector de imagen bonito */
+.upload-box {
+  display: inline-block;
+  padding: 14px 32px;
+  border: 1px dashed #d8cfc7;
+  border-radius: 999px;
+  color: #7a6f67;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.upload-box:hover {
+  background: #f3efec;
+}
+
+/* Imagen */
+img {
+  display: block;
+  max-width: 100%;
+  max-height: 55vh;
+  margin: 40px auto 20px;
+  border-radius: 18px;
+  object-fit: contain;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+/* Botón principal */
 button {
   margin-top: 30px;
-  padding: 14px 32px;
-  background: #111;
-  color: white;
+  padding: 14px 40px;
+  background: #e6cfc1;
+  color: #3a2e28;
   border: none;
   border-radius: 999px;
   font-size: 15px;
@@ -48,42 +78,25 @@ button {
 
 button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 25px rgba(0,0,0,0.25);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
 }
 
-
-
-img {
-  display: block;
-  max-width: 100%;
-  max-height: 60vh;
-  margin: 30px auto;
-  border-radius: 18px;
-  object-fit: contain;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.18);
-  transition: transform 0.3s ease;
-}
-
-  
-}
-
-img:hover {
-  transform: scale(1.02);
-}
+/* Animación */
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
+
+/* Móvil */
 @media (max-width: 600px) {
-  .container {
-    padding: 28px 20px;
-    border-radius: 16px;
+  .card {
+    padding: 40px 24px;
   }
 
   h1 {
