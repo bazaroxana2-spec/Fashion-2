@@ -40,3 +40,9 @@ button {
 button:hover {
   opacity: 0.85;
 }
+img {
+  max-width: 100%;
+  margin-top: 30px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
