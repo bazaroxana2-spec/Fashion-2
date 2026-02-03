@@ -14,10 +14,10 @@ body {
 /* Tarjeta principal */
 .container {
  background: white;
-  padding: 60px 40px;
+  padding: 48px 28px;
   border-radius: 20px;
   max-width: 420px;
-  width: 90%;
+  width: 92%;
   text-align: center;
   box-shadow: 0 20px 40px rgba(0,0,0,0.08);
   animation: fadeUp 0.8s ease;
