@@ -28,19 +28,20 @@ p {
 }
 
 button {
-  margin-top: 30px;
   padding: 14px 28px;
-  font-size: 16px;
-  border: none;
-  border-radius: 30px;
   background: black;
   color: white;
+  border: none;
+  border-radius: 30px;
   cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 button:hover {
-  opacity: 0.85;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
+
 img {
   max-width: 100%;
   margin-top: 30px;
