@@ -115,6 +115,24 @@ button:hover {
   display: none;
 }
 
+#status {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #9c7c6a;
+}
+
+#preview {
+  max-width: 100%;
+  margin-top: 30px;
+  border-radius: 18px;
+  opacity: 0;
+  transition: all 0.6s ease;
+}
+
+#preview.show {
+  opacity: 1;
+}
+
 @keyframes pulse {
   0% { opacity: 0.4; }
   50% { opacity: 1; }
