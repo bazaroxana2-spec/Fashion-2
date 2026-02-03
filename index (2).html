@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Retrato Ilustrado</title>
+<style>
+body { font-family: Arial; text-align:center; background:#f4f4f4; padding:40px; }
+button { padding:12px 20px; background:black; color:white; border:none; cursor:pointer; }
+img { max-width:90%; margin-top:20px; border-radius:10px; }
+</style>
+</head>
+<body>
+
+<h1>Ilustración de Moda en Acuarela</h1>
+
+<input type="file" id="imageUpload" accept="image/*">
+<br><br>
+<button onclick="generateImage()">Crear Ilustración</button>
+
+<div id="result"></div>
+
+<script>
+async function generateImage() {
+  const file = document.getElementById("imageUpload").files[0];
+  if (!file) return alert("Sube una foto primero");
+
+  const formData = new FormData();
+  formData.append("image", file);
+
+  document.getElementById("result").innerHTML = "Generando... ⏳";
+
+  const response = await fetch("/api/generate", {
+    method: "POST",
+    body: formData
+  });
+
+  const data = await response.json();
+
+  document.getElementById("result").innerHTML = `
+    <img src="${data.image}">
+    <br><br>
+    <a href="${data.image}" download="retrato-fashion.png">
+      <button>Descargar</button>
+    </a>
+  `;
+}
+</script>
+
+</body>
+</html>
