@@ -92,7 +92,6 @@ button:hover {
     opacity: 1;
     transform: translateY(0);
   }
-}
 
 /* Móvil */
 @media (max-width: 600px) {
