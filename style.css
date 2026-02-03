@@ -1,26 +1,31 @@
 body {
   margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background-color: pink;
-  color: #111;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f6f6f6; /* gris elegante */
+  font-family: 'Inter', sans-serif;
 }
+
 
 .container {
   animation: fadeUp 0.8s ease-out;
-  max-width: 800px;
-  margin: 100px auto;
+  width: 100%;
+  max-width: 720px;
   background: white;
-  padding: 60px;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  padding: 48px;
+  border-radius: 20px;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.12);
   text-align: center;
 }
 
 h1 {
   animation: fadeUp 1s ease-out;
   font-family: 'Playfair Display', serif;
-  font-size: 36px;
-  margin-bottom: 20px;
+  font-size: 34px;
+  margin-bottom: 30px;
+  color: #111;
 }
 
 p {
@@ -29,28 +34,33 @@ p {
 }
 
 button {
-  padding: 14px 28px;
-  background: black;
+  margin-top: 30px;
+  padding: 14px 32px;
+  background: #111;
   color: white;
   border: none;
-  border-radius: 30px;
+  border-radius: 999px;
+  font-size: 15px;
+  letter-spacing: 0.5px;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.25s ease;
 }
 
 button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.25);
 }
+
 
 
 img {
   display: block;
   max-width: 100%;
-  height: auto;
-  margin: 30px auto 0;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  max-height: 60vh;
+  margin: 30px auto;
+  border-radius: 18px;
+  object-fit: contain;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.18);
   transition: transform 0.3s ease;
 }
 
@@ -68,6 +78,16 @@ img:hover {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+@media (max-width: 600px) {
+  .container {
+    padding: 28px 20px;
+    border-radius: 16px;
+  }
+
+  h1 {
+    font-size: 26px;
   }
 }
 
