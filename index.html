@@ -32,46 +32,54 @@
    <button id="createBtn">Crear ilustración</button>
  
 <script>
-  const input = document.getElementById("imageUpload");
-  const preview = document.getElementById("preview");
-  const button = document.getElementById("createBtn");
-  const status = document.getElementById("status");
+const input = document.getElementById("imageUpload");
+const preview = document.getElementById("preview");
+const button = document.getElementById("createBtn");
+const status = document.getElementById("status");
 
-  let uploadedImage = null;
+let uploadedImage = null;
 
-  input.addEventListener("change", function () {
-    const file = this.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        preview.src = reader.result;
-        uploadedImage = reader.result;
-      };
-      reader.readAsDataURL(file);
-    }
-  });
+// 1️⃣ Mostrar imagen al subirla
+input.addEventListener("change", function () {
+  const file = this.files[0];
+  if (!file) return;
 
-  button.addEventListener("click", function () {
-    if (!uploadedImage) {
-      alert("Por favor selecciona una imagen primero");
-      return;
-    }
+  const reader = new FileReader();
+  reader.onload = () => {
+    preview.src = reader.result;
+    preview.classList.add("show");
+    uploadedImage = reader.result;
+  };
+  reader.readAsDataURL(file);
+});
 
-    status.classList.remove("hidden");
-    preview.style.opacity = "0.3";
+// 2️⃣ Simular creación de ilustración
+button.addEventListener("click", function () {
+  if (!uploadedImage) {
+    alert("Por favor selecciona una imagen primero");
+    return;
+  }
 
-    setTimeout(() => {
-      // SIMULACIÓN: reemplazamos la imagen
-      preview.src = uploadedImage;
-      preview.style.opacity = "1";
-      status.classList.add("hidden");
-    }, 2500);
-  });
+  status.textContent = "Creando ilustración en acuarela...";
+  status.classList.remove("hidden");
+
+  preview.style.opacity = "0.4";
+  button.disabled = true;
+
+  // 3️⃣ Simulación IA
+  setTimeout(() => {
+    status.textContent = "Ilustración lista ✨";
+    preview.style.opacity = "1";
+    button.disabled = false;
+  }, 2500);
+});
 </script>
+
 
 
 </body>
 </html>
+
 
 
 
