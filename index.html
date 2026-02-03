@@ -32,22 +32,48 @@
 
    <button id="createBtn">Crear ilustración</button>
  
-  <script>
-    const input = document.getElementById("imageUpload");
-    const preview = document.getElementById("preview");
+<script>
+  const input = document.getElementById("imageUpload");
+  const preview = document.getElementById("preview");
+  const button = document.getElementById("createBtn");
+  const status = document.getElementById("status");
 
-    input.addEventListener("change", function () {
-      const file = this.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = () => preview.src = reader.result;
-        reader.readAsDataURL(file);
-      }
-    });
-  </script>
+  let uploadedImage = null;
+
+  input.addEventListener("change", function () {
+    const file = this.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        preview.src = reader.result;
+        uploadedImage = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  button.addEventListener("click", function () {
+    if (!uploadedImage) {
+      alert("Por favor selecciona una imagen primero");
+      return;
+    }
+
+    status.classList.remove("hidden");
+    preview.style.opacity = "0.3";
+
+    setTimeout(() => {
+      // SIMULACIÓN: reemplazamos la imagen
+      preview.src = uploadedImage;
+      preview.style.opacity = "1";
+      status.classList.add("hidden");
+    }, 2500);
+  });
+</script>
+
 
 </body>
 </html>
+
 
 
 
