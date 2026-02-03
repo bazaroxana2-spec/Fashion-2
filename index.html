@@ -14,7 +14,7 @@
 <body>
   <div class="container">
 
-    <h1>Ilustración de Moda en Acuarela</h1>
+    <h1>Animacion de fondos</h1>
     <p id="status" class="subtitle">
       Retratos delicados y personalizados para momentos inolvidables
     </p>
@@ -30,6 +30,11 @@
 
 
    <button id="createBtn">Crear ilustración</button>
+    <div id="loader" class="loader hidden">
+  <div class="spinner"></div>
+  <p>Creando ilustración en acuarela…</p>
+</div>
+
  
 <script>
 const input = document.getElementById("imageUpload");
@@ -79,6 +84,7 @@ button.addEventListener("click", function () {
 
 </body>
 </html>
+
 
 
 
