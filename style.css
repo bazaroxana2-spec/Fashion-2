@@ -170,3 +170,25 @@ button:hover {
 .hidden {
   display: none;
 }
+
+/* ESTILO ILUSTRADO */
+.illustrated {
+  filter:
+    brightness(1.05)
+    contrast(0.9)
+    saturate(0.85)
+    blur(0.6px);
+  transform: scale(1.02);
+  transition: all 1s ease;
+}
+
+/* Marco tipo papel */
+#preview {
+  background: #fff;
+  padding: 12px;
+  border-radius: 20px;
+  box-shadow:
+    0 20px 40px rgba(0,0,0,0.12),
+    inset 0 0 0 1px #eee;
+}
+
