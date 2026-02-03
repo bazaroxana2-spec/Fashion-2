@@ -45,6 +45,10 @@ const preview = document.getElementById("preview");
 const button = document.getElementById("createBtn");
 const status = document.getElementById("status");
 const loader = document.getElementById("loader"); 
+const toggleBtn = document.getElementById("toggleView");
+const compare = document.getElementById("compare");
+
+let showingIllustrated = true;
 
 let uploadedImage = null;
 
@@ -83,6 +87,9 @@ button.addEventListener("click", function () {
     preview.style.opacity = "1";
     preview.classList.add("illustrated");
     button.disabled = false;
+    compare.classList.remove("hidden");
+showingIllustrated = true;
+
   }, 2500);
 });
 
@@ -98,12 +105,27 @@ button.addEventListener("click", function () {
     preview.style.opacity = "1";
     button.disabled = false;
   }, 2500);
+  toggleBtn.addEventListener("click", () => {
+  if (!uploadedImage) return;
+
+  if (showingIllustrated) {
+    preview.classList.remove("illustrated");
+    toggleBtn.textContent = "Ver ilustración";
+  } else {
+    preview.classList.add("illustrated");
+    toggleBtn.textContent = "Ver antes";
+  }
+
+  showingIllustrated = !showingIllustrated;
+});
+
 </script>
 
 
 
 </body>
 </html>
+
 
 
 
