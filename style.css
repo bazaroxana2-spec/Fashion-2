@@ -16,8 +16,9 @@ body {
 }
 
 h1 {
-  font-size: 32px;
-  margin-bottom: 16px;
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  margin-bottom: 20px;
 }
 
 p {
