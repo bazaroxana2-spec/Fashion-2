@@ -14,7 +14,10 @@
 
 <body>
 
-  <div class="card">
+  <div id="status" class="status hidden">
+  Creando ilustración en acuarela…
+</div>
+
     <h1>Ilustración de Moda en Acuarela</h1>
     <p class="subtitle">
       Retratos delicados y personalizados para momentos inolvidables
@@ -27,9 +30,8 @@
 
     <img id="preview" />
 
-    <button>Crear ilustración</button>
-  </div>
-
+   <button id="createBtn">Crear ilustración</button>
+ 
   <script>
     const input = document.getElementById("imageUpload");
     const preview = document.getElementById("preview");
@@ -46,6 +48,7 @@
 
 </body>
 </html>
+
 
 
 
