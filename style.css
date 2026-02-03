@@ -193,3 +193,15 @@ button:hover {
     inset 0 0 0 1px #eee;
 }
 
+.compare {
+  margin-top: 16px;
+}
+
+.compare button {
+  background: transparent;
+  border: 1px solid #d8c1b3;
+  padding: 10px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  cursor: pointer;
+}
