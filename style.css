@@ -103,4 +103,20 @@ button:hover {
     font-size: 26px;
   }
 }
+.status {
+  margin-top: 20px;
+  font-size: 15px;
+  color: #7a6f67;
+  animation: pulse 1.5s infinite;
+}
+
+.hidden {
+  display: none;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { opacity: 0.4; }
+}
 
