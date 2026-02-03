@@ -11,24 +11,25 @@
 
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-
-  <div id="status" class="status hidden">
-  Creando ilustración en acuarela…
-</div>
+  <div class="container">
 
     <h1>Ilustración de Moda en Acuarela</h1>
     <p class="subtitle">
       Retratos delicados y personalizados para momentos inolvidables
     </p>
 
-    <label class="upload-box">
+    <label class="upload-btn">
+      Seleccionar fotografía
       <input type="file" id="imageUpload" accept="image/*" hidden>
-      <span>Seleccionar fotografía</span>
     </label>
 
-    <img id="preview" />
+    <button id="generateBtn">Crear ilustración</button>
+
+    <div class="result">
+      <img id="preview" />
+    </div>
+
 
    <button id="createBtn">Crear ilustración</button>
  
@@ -73,6 +74,7 @@
 
 </body>
 </html>
+
 
 
 
