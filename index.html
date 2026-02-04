@@ -213,10 +213,37 @@ async function generateIllustration(imageBase64) {
 }
 
 /* BOTÓN CREAR */
+createBtn.addEventListener("click", async () => {
+  if (!uploadedImage) {
+    alert("Selecciona una imagen primero");
+    return;
+  }
 
+  loader.classList.remove("hidden");
+  createBtn.disabled = true;
+
+  const illustrated = await generateIllustration(uploadedImage);
+
+  preview.src = illustrated;
+  afterImg.src = illustrated;
+
+  loader.classList.add("hidden");
+  createBtn.disabled = false;
+  downloadBtn.classList.remove("hidden");
+});
+
+/* DESCARGAR */
+downloadBtn.addEventListener("click", () => {
+  const link = document.createElement("a");
+  link.href = afterImg.src;
+  link.download = "ilustracion-acuarela.png";
+  link.click();
+});
+</script>
 
 </body>
 </html>
+
 
 
 
