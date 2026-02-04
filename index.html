@@ -123,7 +123,14 @@
       <input type="file" id="imageUpload" accept="image/*" hidden>
     </label>
 
-    <div class="result">
+    <div class="compare-container hidden" id="compare">
+  <div class="image-wrapper">
+    <img id="beforeImage">
+    <img id="afterImage" class="illustrated">
+  </div>
+  <input type="range" id="slider" min="0" max="100" value="50">
+</div>
+
       <img id="preview" />
     </div>
 
@@ -180,6 +187,7 @@
 
 </body>
 </html>
+
 
 
 
