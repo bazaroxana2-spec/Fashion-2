@@ -3,225 +3,219 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ilustración en Acuarela</title>
 
-  <title>Ilustración de Moda en Acuarela</title>
-
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     body {
       margin: 0;
       min-height: 100vh;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      background: #f6f1ec;
       font-family: 'Inter', sans-serif;
-      background: #fdf1ec;
     }
 
     .container {
       background: #fff;
-      padding: 40px 30px;
+      padding: 30px;
       border-radius: 20px;
-      max-width: 420px;
       width: 100%;
+      max-width: 420px;
       text-align: center;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+      box-shadow: 0 20px 40px rgba(0,0,0,.1);
     }
 
     h1 {
       font-family: 'Playfair Display', serif;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     p {
-      color: #777;
-      margin-bottom: 24px;
+      font-size: 14px;
+      opacity: .7;
     }
 
     .upload-btn {
       display: inline-block;
-      padding: 12px 22px;
-      border: 1px dashed #d6bfb0;
-      border-radius: 30px;
-      cursor: pointer;
-      margin-bottom: 20px;
-      font-size: 14px;
-    }
-
-    .result {
       margin: 20px 0;
-    }
-
-    #preview {
-      max-width: 100%;
-      max-height: 320px;
-      border-radius: 16px;
-      display: none; /* CLAVE */
-      transition: all 0.4s ease;
-    }
-
-    #preview.show {
-      display: block;
-    }
-
-    #preview.illustrated {
-      filter: contrast(1.1) saturate(1.2) blur(0.3px);
-    }
-
-    button {
-      border: none;
-      padding: 14px 26px;
+      padding: 12px 20px;
+      border: 1px dashed #aaa;
       border-radius: 30px;
-      background: #e7cfc0;
       cursor: pointer;
-      margin-top: 14px;
-      font-size: 14px;
     }
 
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .hidden {
+    .compare-container {
+      position: relative;
+      width: 100%;
+      margin: 20px 0;
       display: none;
     }
 
+    .image-wrapper {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+
+    .image-wrapper img {
+      width: 100%;
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    #beforeImage {
+      position: relative;
+    }
+
+    #afterImage {
+      clip-path: inset(0 50% 0 0);
+      transition: clip-path .2s;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    button {
+      padding: 12px 25px;
+      border-radius: 30px;
+      border: none;
+      background: #e5cbb8;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
     .loader {
-      margin-top: 20px;
+      display: none;
+      margin-top: 15px;
     }
 
-    .spinner {
-      width: 28px;
-      height: 28px;
-      border: 3px solid #eee;
-      border-top: 3px solid #d6bfb0;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 10px;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    canvas {
+      display: none;
     }
   </style>
 </head>
+
 <body>
 
-  <div class="container">
-    <h1>Ilustración en Acuarela</h1>
-    <p>Retratos delicados para momentos inolvidables</p>
+<div class="container">
+  <h1>Ilustración en Acuarela</h1>
+  <p>Retratos delicados y personalizados</p>
 
-    <label class="upload-btn">
-      Seleccionar fotografía
-      <input type="file" id="imageUpload" accept="image/*" hidden>
-    </label>
-    <!-- CONTENEDOR ANTES / DESPUÉS -->
-  <div class="compare-container hidden" id="compare">
+  <label class="upload-btn">
+    Seleccionar fotografía
+    <input type="file" id="imageUpload" accept="image/*" hidden>
+  </label>
+
+  <div class="compare-container" id="compare">
     <div class="image-wrapper">
       <img id="beforeImage">
-      <img id="afterImage" class="illustrated">
+      <img id="afterImage">
     </div>
     <input type="range" id="slider" min="0" max="100" value="50">
   </div>
 
-  <!-- 🔴 CANVAS OCULTO (AQUÍ VA) -->
-  <canvas id="canvas" class="hidden"></canvas>
-
-  <!-- BOTONES -->
   <button id="createBtn">Crear ilustración</button>
-  <button id="downloadBtn" class="hidden">Descargar ilustración</button>
+  <button id="downloadBtn" style="display:none;">Descargar ilustración</button>
 
-  <!-- LOADER -->
-  <div id="loader" class="loader hidden">
-    <div class="spinner"></div>
-    <p>Creando ilustración en acuarela…</p>
-  </div>
+  <div class="loader" id="loader">Creando ilustración…</div>
 </div>
 
-    <div class="compare-container hidden" id="compare">
-  <div class="image-wrapper">
-    <img id="beforeImage">
-    <img id="afterImage" class="illustrated">
-  </div>
-  <input type="range" id="slider" min="0" max="100" value="50">
-</div>
+<canvas id="canvas"></canvas>
 
-      <img id="preview" />
-    </div>
+<script>
+const input = document.getElementById("imageUpload");
+const createBtn = document.getElementById("createBtn");
+const downloadBtn = document.getElementById("downloadBtn");
+const loader = document.getElementById("loader");
 
-    <button id="createBtn">Crear ilustración</button>
-
-    <div id="loader" class="loader hidden">
-      <div class="spinner"></div>
-      <p>Creando ilustración…</p>
-    </div>
-  </div>
-
-  <script>
-    const input = document.getElementById("imageUpload");
-    const preview = document.getElementById("preview");
-    const button = document.getElementById("createBtn");
-    const loader = document.getElementById("loader");
-    const beforeImg = document.getElementById("beforeImage");
+const beforeImg = document.getElementById("beforeImage");
 const afterImg = document.getElementById("afterImage");
+const compare = document.getElementById("compare");
 const slider = document.getElementById("slider");
 
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let uploadedImage = null;
+
+// SLIDER
 slider.addEventListener("input", () => {
-  const value = slider.value;
-  afterImg.style.clipPath = `inset(0 ${100 - value}% 0 0)`;
+  afterImg.style.clipPath = `inset(0 ${100 - slider.value}% 0 0)`;
 });
 
+// SUBIR IMAGEN
+input.addEventListener("change", () => {
+  const file = input.files[0];
+  if (!file) return;
 
-    let uploadedImage = null;
+  const reader = new FileReader();
+  reader.onload = () => {
+    uploadedImage = reader.result;
+    beforeImg.src = uploadedImage;
+    afterImg.src = uploadedImage;
+    compare.style.display = "block";
+  };
+  reader.readAsDataURL(file);
+});
 
-    // Mostrar imagen al subir
-    input.addEventListener("change", () => {
-      const file = input.files[0];
-      if (!file) return;
+// GENERAR ILUSTRACIÓN (BETA REAL)
+async function generateIllustration(imageSrc) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
 
-      const reader = new FileReader();
-      reader.onload = () => {
-        preview.src = reader.result;
-        preview.classList.remove("illustrated");
-        preview.classList.add("show");
-        uploadedImage = reader.result;
-        beforeImg.src = reader.result;
-afterImg.src = reader.result;
-compare.classList.remove("hidden");
+      ctx.drawImage(img, 0, 0);
+      ctx.globalAlpha = 0.85;
+      ctx.filter = "blur(1.5px) contrast(1.1) saturate(1.2)";
+      ctx.drawImage(canvas, 0, 0);
 
-      };
-      reader.readAsDataURL(file);
-    });
+      resolve(canvas.toDataURL("image/png"));
+    };
+    img.src = imageSrc;
+  });
+}
 
-    // Simular ilustración
-    button.addEventListener("click", () => {
-      if (!uploadedImage) {
-        alert("Selecciona una imagen primero");
-        return;
-      }
+// BOTÓN CREAR
+createBtn.addEventListener("click", async () => {
+  if (!uploadedImage) {
+    alert("Selecciona una imagen primero");
+    return;
+  }
 
-      loader.classList.remove("hidden");
-      button.disabled = true;
-      preview.style.opacity = "0.4";
+  loader.style.display = "block";
+  createBtn.disabled = true;
 
-      setTimeout(() => {
-        loader.classList.add("hidden");
-        preview.style.opacity = "1";
-        preview.classList.add("illustrated");
-        button.disabled = false;
-      }, 2500);
-    });
-  </script>
+  const illustrated = await generateIllustration(uploadedImage);
+
+  afterImg.src = illustrated;
+  downloadBtn.style.display = "inline-block";
+
+  loader.style.display = "none";
+  createBtn.disabled = false;
+});
+
+// DESCARGAR
+downloadBtn.addEventListener("click", () => {
+  const link = document.createElement("a");
+  link.href = afterImg.src;
+  link.download = "ilustracion-acuarela.png";
+  link.click();
+});
+</script>
 
 </body>
 </html>
+
 
 
 
