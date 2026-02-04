@@ -156,6 +156,7 @@ const createBtn = document.getElementById("createBtn");
 const downloadBtn = document.getElementById("downloadBtn");
 const loader = document.getElementById("loader");
 
+const preview = document.getElementById("preview");
 const beforeImg = document.getElementById("beforeImage");
 const afterImg = document.getElementById("afterImage");
 const compare = document.getElementById("compare");
@@ -163,39 +164,15 @@ const slider = document.getElementById("slider");
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-const canvasWrapper = document.getElementById("canvasWrapper");
-
-function applyWatercolorEffect(imageSrc) {
-  const img = new Image();
-  img.onload = () => {
-    canvas.width = img.width;
-    canvas.height = img.height;
-
-    // Dibuja imagen original
-    ctx.drawImage(img, 0, 0);
-
-    // Efecto acuarela SUAVE
-    ctx.globalAlpha = 0.15;
-    ctx.filter = "blur(2px) contrast(110%) saturate(110%)";
-    ctx.drawImage(canvas, 0, 0);
-
-    ctx.globalAlpha = 1;
-    ctx.filter = "none";
-
-    canvasWrapper.classList.remove("hidden");
-  };
-  img.src = imageSrc;
-}
-  
 
 let uploadedImage = null;
 
-// SLIDER
+/* SLIDER antes / después */
 slider.addEventListener("input", () => {
   afterImg.style.clipPath = `inset(0 ${100 - slider.value}% 0 0)`;
 });
 
-// SUBIR IMAGEN
+/* SUBIR IMAGEN */
 input.addEventListener("change", () => {
   const file = input.files[0];
   if (!file) return;
@@ -203,94 +180,44 @@ input.addEventListener("change", () => {
   const reader = new FileReader();
   reader.onload = () => {
     uploadedImage = reader.result;
+    preview.src = uploadedImage;
     beforeImg.src = uploadedImage;
     afterImg.src = uploadedImage;
-    compare.style.display = "block";
+    compare.classList.remove("hidden");
   };
   reader.readAsDataURL(file);
 });
 
-// GENERAR ILUSTRACIÓN (BETA REAL)
+/* IA BETA REAL CON CANVAS */
 async function generateIllustration(imageBase64) {
   return new Promise(resolve => {
     const img = new Image();
-
     img.onload = () => {
-      // Ajustar canvas
       canvas.width = img.width;
       canvas.height = img.height;
 
-      // Dibujar imagen original
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(img, 0, 0);
 
-      // 🎨 EFECTO ACUARELA SUAVE (beta)
       ctx.globalAlpha = 0.25;
       ctx.filter = "blur(2px) saturate(115%) contrast(105%)";
       ctx.drawImage(canvas, 0, 0);
 
-      // Resetear contexto
       ctx.globalAlpha = 1;
       ctx.filter = "none";
 
-      // Devolver imagen procesada
       resolve(canvas.toDataURL("image/png"));
     };
-
     img.src = imageBase64;
   });
 }
 
+/* BOTÓN CREAR */
 
-// BOTÓN CREAR
-createBtn.addEventListener("click", async () => {
-  if (!uploadedImage) {
-    alert("Selecciona una imagen primero");
-    return;
-    const illustrated = await generateIllustration(uploadedImage);
-preview.src = illustrated;
-afterImg.src = illustrated;
-  }
-
-  // Mostrar loader
-  loader.classList.remove("hidden");
-  createBtn.disabled = true;
-
-  // ⚠️ IA (por ahora simulada)
-  const illustratedImage = await generateIllustration(uploadedImage);
-
-  // Mostrar resultado
-  preview.src = illustratedImage;
-  afterImg.src = illustratedImage;
-
-  // Aplicar efecto acuarela en canvas
-  applyWatercolorEffect(illustratedImage);
-
-  // Ocultar loader
-  loader.classList.add("hidden");
-  createBtn.disabled = false;
-
-  // Mostrar descarga
-  downloadBtn.classList.remove("hidden");
-});
-
-  afterImg.src = illustrated;
-  downloadBtn.style.display = "inline-block";
-
-  loader.style.display = "none";
-  createBtn.disabled = false;
-
-// DESCARGAR
-downloadBtn.addEventListener("click", () => {
-  const link = document.createElement("a");
-  link.href = afterImg.src;
-  link.download = "ilustracion-acuarela.png";
-  link.click();
-});
-</script>
 
 </body>
 </html>
+
 
 
 
