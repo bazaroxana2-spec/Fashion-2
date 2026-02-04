@@ -163,7 +163,7 @@ const slider = document.getElementById("slider");
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-  const canvasWrapper = document.getElementById("canvasWrapper");
+const canvasWrapper = document.getElementById("canvasWrapper");
 
 function applyWatercolorEffect(imageSrc) {
   const img = new Image();
@@ -211,33 +211,68 @@ input.addEventListener("change", () => {
 });
 
 // GENERAR ILUSTRACIÓN (BETA REAL)
-async function generateIllustration(imageSrc) {
+async function generateIllustration(imageBase64) {
   return new Promise(resolve => {
     const img = new Image();
+
     img.onload = () => {
+      // Ajustar canvas
       canvas.width = img.width;
       canvas.height = img.height;
 
+      // Dibujar imagen original
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(img, 0, 0);
-      ctx.globalAlpha = 0.85;
-      ctx.filter = "blur(1.5px) contrast(1.1) saturate(1.2)";
+
+      // 🎨 EFECTO ACUARELA SUAVE (beta)
+      ctx.globalAlpha = 0.25;
+      ctx.filter = "blur(2px) saturate(115%) contrast(105%)";
       ctx.drawImage(canvas, 0, 0);
 
+      // Resetear contexto
+      ctx.globalAlpha = 1;
+      ctx.filter = "none";
+
+      // Devolver imagen procesada
       resolve(canvas.toDataURL("image/png"));
     };
-    img.src = imageSrc;
+
+    img.src = imageBase64;
   });
 }
+
 
 // BOTÓN CREAR
 createBtn.addEventListener("click", async () => {
   if (!uploadedImage) {
     alert("Selecciona una imagen primero");
     return;
+    const illustrated = await generateIllustration(uploadedImage);
+preview.src = illustrated;
+afterImg.src = illustrated;
   }
 
-  loader.style.display = "block";
+  // Mostrar loader
+  loader.classList.remove("hidden");
   createBtn.disabled = true;
+
+  // ⚠️ IA (por ahora simulada)
+  const illustratedImage = await generateIllustration(uploadedImage);
+
+  // Mostrar resultado
+  preview.src = illustratedImage;
+  afterImg.src = illustratedImage;
+
+  // Aplicar efecto acuarela en canvas
+  applyWatercolorEffect(illustratedImage);
+
+  // Ocultar loader
+  loader.classList.add("hidden");
+  createBtn.disabled = false;
+
+  // Mostrar descarga
+  downloadBtn.classList.remove("hidden");
+});
 
   const illustrated = await generateIllustration(uploadedImage);
 
@@ -259,6 +294,7 @@ downloadBtn.addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
 
