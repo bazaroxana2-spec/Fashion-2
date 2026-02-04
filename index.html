@@ -26,7 +26,27 @@
       max-width: 420px;
       text-align: center;
       box-shadow: 0 20px 40px rgba(0,0,0,.1);
-    }
+    } 
+    
+    .canvas-wrapper {
+  position: relative;
+  width: 100%;
+  margin-top: 20px;
+  background: #fdfaf7;
+  padding: 12px;
+  border-radius: 18px;
+}
+
+canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 16px;
+}
+
+.hidden {
+  display: none;
+}
 
     h1 {
       font-family: 'Playfair Display', serif;
@@ -143,6 +163,30 @@ const slider = document.getElementById("slider");
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+  const canvasWrapper = document.getElementById("canvasWrapper");
+
+function applyWatercolorEffect(imageSrc) {
+  const img = new Image();
+  img.onload = () => {
+    canvas.width = img.width;
+    canvas.height = img.height;
+
+    // Dibuja imagen original
+    ctx.drawImage(img, 0, 0);
+
+    // Efecto acuarela SUAVE
+    ctx.globalAlpha = 0.15;
+    ctx.filter = "blur(2px) contrast(110%) saturate(110%)";
+    ctx.drawImage(canvas, 0, 0);
+
+    ctx.globalAlpha = 1;
+    ctx.filter = "none";
+
+    canvasWrapper.classList.remove("hidden");
+  };
+  img.src = imageSrc;
+}
+  
 
 let uploadedImage = null;
 
