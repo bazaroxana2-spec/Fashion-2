@@ -122,6 +122,28 @@
       Seleccionar fotografía
       <input type="file" id="imageUpload" accept="image/*" hidden>
     </label>
+    <!-- CONTENEDOR ANTES / DESPUÉS -->
+  <div class="compare-container hidden" id="compare">
+    <div class="image-wrapper">
+      <img id="beforeImage">
+      <img id="afterImage" class="illustrated">
+    </div>
+    <input type="range" id="slider" min="0" max="100" value="50">
+  </div>
+
+  <!-- 🔴 CANVAS OCULTO (AQUÍ VA) -->
+  <canvas id="canvas" class="hidden"></canvas>
+
+  <!-- BOTONES -->
+  <button id="createBtn">Crear ilustración</button>
+  <button id="downloadBtn" class="hidden">Descargar ilustración</button>
+
+  <!-- LOADER -->
+  <div id="loader" class="loader hidden">
+    <div class="spinner"></div>
+    <p>Creando ilustración en acuarela…</p>
+  </div>
+</div>
 
     <div class="compare-container hidden" id="compare">
   <div class="image-wrapper">
@@ -200,6 +222,7 @@ compare.classList.remove("hidden");
 
 </body>
 </html>
+
 
 
 
