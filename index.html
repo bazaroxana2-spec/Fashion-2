@@ -147,6 +147,15 @@
     const preview = document.getElementById("preview");
     const button = document.getElementById("createBtn");
     const loader = document.getElementById("loader");
+    const beforeImg = document.getElementById("beforeImage");
+const afterImg = document.getElementById("afterImage");
+const slider = document.getElementById("slider");
+
+slider.addEventListener("input", () => {
+  const value = slider.value;
+  afterImg.style.clipPath = `inset(0 ${100 - value}% 0 0)`;
+});
+
 
     let uploadedImage = null;
 
@@ -161,6 +170,10 @@
         preview.classList.remove("illustrated");
         preview.classList.add("show");
         uploadedImage = reader.result;
+        beforeImg.src = reader.result;
+afterImg.src = reader.result;
+compare.classList.remove("hidden");
+
       };
       reader.readAsDataURL(file);
     });
@@ -187,6 +200,7 @@
 
 </body>
 </html>
+
 
 
 
