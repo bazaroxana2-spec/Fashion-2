@@ -156,7 +156,6 @@ const createBtn = document.getElementById("createBtn");
 const downloadBtn = document.getElementById("downloadBtn");
 const loader = document.getElementById("loader");
 
-const preview = document.getElementById("preview");
 const beforeImg = document.getElementById("beforeImage");
 const afterImg = document.getElementById("afterImage");
 const compare = document.getElementById("compare");
@@ -180,10 +179,9 @@ input.addEventListener("change", () => {
   const reader = new FileReader();
   reader.onload = () => {
     uploadedImage = reader.result;
-    preview.src = uploadedImage;
     beforeImg.src = uploadedImage;
     afterImg.src = uploadedImage;
-    compare.classList.remove("hidden");
+    compare.style.display ="block";
   };
   reader.readAsDataURL(file);
 });
@@ -219,18 +217,17 @@ createBtn.addEventListener("click", async () => {
     return;
   }
 
-  loader.classList.remove("hidden");
+  loader.style.display = "block";
   createBtn.disabled = true;
 
   const illustrated = await generateIllustration(uploadedImage);
-
-  preview.src = illustrated;
   afterImg.src = illustrated;
 
-  loader.classList.add("hidden");
+  loader.style.display = "none";
   createBtn.disabled = false;
-  downloadBtn.classList.remove("hidden");
+  downloadBtn.style.display = "inline-block";
 });
+
 
 /* DESCARGAR */
 downloadBtn.addEventListener("click", () => {
@@ -243,6 +240,7 @@ downloadBtn.addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
 
