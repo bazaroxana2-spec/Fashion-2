@@ -211,3 +211,34 @@ button:hover {
   background: #c8a997;
   color: white;
 }
+.compare-container {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  margin: 20px auto;
+}
+
+.image-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.image-wrapper img {
+  width: 100%;
+  display: block;
+}
+
+#afterImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  clip-path: inset(0 50% 0 0);
+  transition: clip-path 0.2s ease;
+}
+
+#slider {
+  width: 100%;
+  margin-top: 12px;
+}
+
