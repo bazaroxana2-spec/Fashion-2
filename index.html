@@ -141,6 +141,11 @@ canvas {
     </div>
     <input type="range" id="slider" min="0" max="100" value="50">
   </div>
+  
+  <div class="canvas-wrapper hidden" id="canvasWrapper">
+  <canvas id="canvas"></canvas>
+</div>
+
 
   <button id="createBtn">Crear ilustración</button>
   <button id="downloadBtn" style="display:none;">Descargar ilustración</button>
@@ -149,10 +154,6 @@ canvas {
 </div>
 
 <canvas id="canvas"></canvas>
-
-  <div class="canvas-wrapper hidden" id="canvasWrapper">
-  <canvas id="canvas"></canvas>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
@@ -170,6 +171,39 @@ const slider = document.getElementById("slider");
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+const canvasWrapper = document.getElementById("canvasWrapper");
+
+const selfieSegmentation = new SelfieSegmentation({
+  locateFile: (file) =>
+    `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`,
+});
+
+selfieSegmentation.setOptions({
+  modelSelection: 1, // mejor calidad
+});
+
+selfieSegmentation.onResults(results => {
+  canvas.width = results.image.width;
+  canvas.height = results.image.height;
+
+  // Fondo estudio profesional
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "#f5f2ee";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Aplicar máscara (persona intacta)
+  ctx.globalCompositeOperation = "destination-atop";
+  ctx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
+
+  ctx.globalCompositeOperation = "destination-over";
+  ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
+
+  ctx.globalCompositeOperation = "source-over";
+
+  const finalImage = canvas.toDataURL("image/png");
+  afterImg.src = finalImage;
+
+  canvasWrapper.classList.remove("hidden");
 
 let uploadedImage = null;
 
@@ -268,6 +302,7 @@ downloadBtn.addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
 
