@@ -150,6 +150,13 @@ canvas {
 
 <canvas id="canvas"></canvas>
 
+  <div class="canvas-wrapper hidden" id="canvasWrapper">
+  <canvas id="canvas"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+
 <script>
 const input = document.getElementById("imageUpload");
 const createBtn = document.getElementById("createBtn");
@@ -261,6 +268,7 @@ downloadBtn.addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
 
