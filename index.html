@@ -1,307 +1,275 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Spotlight Studio</title>
+import { useState, useCallback } from "react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
+import { Upload, Sparkles, Download, RefreshCw, Image, Moon, Sun } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+const Index = () => {
+  const [mode, setMode] = useState<"edit" | "generate">("edit");
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [resultImage, setResultImage] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [isDark, setIsDark] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
+  const { toast } = useToast();
 
-  <style>
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #f6f1ec;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .container {
-      background: #fff;
-      padding: 30px;
-      border-radius: 20px;
-      width: 100%;
-      max-width: 420px;
-      text-align: center;
-      box-shadow: 0 20px 40px rgba(0,0,0,.1);
-    } 
-    
-    .canvas-wrapper {
-  position: relative;
-  width: 100%;
-  margin-top: 20px;
-  background: #fdfaf7;
-  padding: 12px;
-  border-radius: 18px;
-}
-
-canvas {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 16px;
-}
-
-.hidden {
-  display: none;
-}
-
-    h1 {
-      font-family: 'Playfair Display', serif;
-      margin-bottom: 10px;
-    }
-
-    p {
-      font-size: 14px;
-      opacity: .7;
-    }
-
-    .upload-btn {
-      display: inline-block;
-      margin: 20px 0;
-      padding: 12px 20px;
-      border: 1px dashed #aaa;
-      border-radius: 30px;
-      cursor: pointer;
-    }
-
-    .compare-container {
-      position: relative;
-      width: 100%;
-      margin: 20px 0;
-      display: none;
-    }
-
-    .image-wrapper {
-      position: relative;
-      width: 100%;
-      overflow: hidden;
-      border-radius: 12px;
-    }
-
-    .image-wrapper img {
-      width: 100%;
-      display: block;
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-
-    #beforeImage {
-      position: relative;
-    }
-
-    #afterImage {
-      clip-path: inset(0 50% 0 0);
-      transition: clip-path .2s;
-    }
-
-    input[type="range"] {
-      width: 100%;
-      margin-top: 10px;
-    }
-
-    button {
-      padding: 12px 25px;
-      border-radius: 30px;
-      border: none;
-      background: #e5cbb8;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    .loader {
-      display: none;
-      margin-top: 15px;
-    }
-
-    canvas {
-      display: none;
-    }
-  </style>
-</head>
-
-<body>
-
-<div class="container">
-  <h1>Spotlight Studio</h1>
-  <p>Retratos delicados y personalizados</p>
-
-  <label class="upload-btn">
-    Seleccionar fotografía
-    <input type="file" id="imageUpload" accept="image/*" hidden>
-  </label>
-
-  <div class="compare-container" id="compare">
-    <div class="image-wrapper">
-      <img id="beforeImage">
-      <img id="afterImage">
-    </div>
-    <input type="range" id="slider" min="0" max="100" value="50">
-  </div>
-  
-  <div class="canvas-wrapper hidden" id="canvasWrapper">
-  <canvas id="canvas"></canvas>
-</div>
-
-
-  <button id="createBtn">Crear ilustración</button>
-  <button id="downloadBtn" style="display:none;">Descargar ilustración</button>
-
-  <div class="loader" id="loader">Creando ilustración…</div>
-</div>
-
-<canvas id="canvas"></canvas>
-
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
-
-<script>
-const input = document.getElementById("imageUpload");
-const createBtn = document.getElementById("createBtn");
-const downloadBtn = document.getElementById("downloadBtn");
-const loader = document.getElementById("loader");
-
-const beforeImg = document.getElementById("beforeImage");
-const afterImg = document.getElementById("afterImage");
-const compare = document.getElementById("compare");
-const slider = document.getElementById("slider");
-
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-const canvasWrapper = document.getElementById("canvasWrapper");
-
-const selfieSegmentation = new SelfieSegmentation({
-  locateFile: (file) =>
-    `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`,
-});
-
-selfieSegmentation.setOptions({
-  modelSelection: 1, // mejor calidad
-});
-
-selfieSegmentation.onResults(results => {
-  canvas.width = results.image.width;
-  canvas.height = results.image.height;
-
-  // Fondo estudio profesional
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "#f5f2ee";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // Aplicar máscara (persona intacta)
-  ctx.globalCompositeOperation = "destination-atop";
-  ctx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
-
-  ctx.globalCompositeOperation = "destination-over";
-  ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
-
-  ctx.globalCompositeOperation = "source-over";
-
-  const finalImage = canvas.toDataURL("image/png");
-  afterImg.src = finalImage;
-
-  canvasWrapper.classList.remove("hidden");
-
-let uploadedImage = null;
-
-/* SLIDER antes / después */
-slider.addEventListener("input", () => {
-  afterImg.style.clipPath = `inset(0 ${100 - slider.value}% 0 0)`;
-});
-
-/* SUBIR IMAGEN */
-input.addEventListener("change", () => {
-  const file = input.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = () => {
-    uploadedImage = reader.result;
-    beforeImg.src = uploadedImage;
-    afterImg.src = uploadedImage;
-    compare.style.display ="block";
+  const toggleTheme = () => {
+    setIsDark(!isDark);
+    document.documentElement.classList.toggle("dark");
   };
-  reader.readAsDataURL(file);
-});
 
-/* IA BETA REAL CON CANVAS */
-async function generateIllustration(imageBase64) {
-  return new Promise(resolve => {
-    const img = new Image();
+  const fileToBase64 = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
 
-    img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
+  const handleFile = useCallback(async (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      toast({ title: "Please upload an image file", variant: "destructive" });
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      toast({ title: "Image must be under 10MB", variant: "destructive" });
+      return;
+    }
+    const base64 = await fileToBase64(file);
+    setUploadedImage(base64);
+    setResultImage(null);
+  }, [toast]);
 
-      // 1️⃣ Dibujo base
-      ctx.drawImage(img, 0, 0);
+  const onDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setDragActive(false);
+    const file = e.dataTransfer.files[0];
+    if (file) handleFile(file);
+  }, [handleFile]);
 
-      // 2️⃣ Fondo tipo estudio (suavizado general)
-      ctx.globalCompositeOperation = "source-over";
-      ctx.globalAlpha = 0.35;
-      ctx.filter = "blur(6px) brightness(1.15) contrast(0.95)";
-      ctx.drawImage(canvas, 0, 0);
+  const onFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) handleFile(file);
+  };
 
-      // 3️⃣ Luz tipo estudio (overlay suave)
-      ctx.globalCompositeOperation = "overlay";
-      ctx.globalAlpha = 0.25;
-      ctx.filter = "none";
-      ctx.fillStyle = "#f5efe8";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+  const processImage = async () => {
+    setIsProcessing(true);
+    setResultImage(null);
+    try {
+      const { data, error } = await supabase.functions.invoke("transform-image", {
+        body: {
+          mode,
+          imageBase64: mode === "edit" ? uploadedImage : undefined,
+        },
+      });
 
-      // 4️⃣ Textura papel / acuarela
-      ctx.globalCompositeOperation = "multiply";
-      ctx.globalAlpha = 0.15;
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
 
-      // Reset
-      ctx.globalCompositeOperation = "source-over";
-      ctx.globalAlpha = 1;
-      ctx.filter = "none";
+      if (data?.imageUrl) {
+        setResultImage(data.imageUrl);
+      } else {
+        toast({ title: "No image was generated. Try again.", variant: "destructive" });
+      }
+    } catch (err: any) {
+      console.error(err);
+      toast({ title: err.message || "Something went wrong", variant: "destructive" });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
-      resolve(canvas.toDataURL("image/png"));
-    };
+  const downloadResult = () => {
+    if (!resultImage) return;
+    const link = document.createElement("a");
+    link.href = resultImage;
+    link.download = `watercolor-illustration-${Date.now()}.png`;
+    link.click();
+  };
 
-    img.src = imageBase64;
-  });
-}
+  return (
+    <div className="min-h-screen bg-background transition-colors duration-300">
+      {/* Header */}
+      <header className="flex items-center justify-between px-6 py-4 md:px-12 md:py-6">
+        <div className="flex items-center gap-2">
+          <Image className="h-5 w-5 text-accent" />
+          <h1 className="text-lg font-medium tracking-tight" style={{ fontFamily: "var(--font-display)" }}>
+            Photo Studio
+          </h1>
+        </div>
+        <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-full">
+          {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+        </Button>
+      </header>
 
-}
+      {/* Main */}
+      <main className="mx-auto max-w-3xl px-4 pb-16 pt-4 md:px-6">
+        <div className="mb-8 text-center">
+          <h2
+            className="text-3xl font-semibold tracking-tight md:text-4xl"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            Professional Studio Background
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Replace your photo's background with a clean professional studio setup
+          </p>
+        </div>
 
-/* BOTÓN CREAR */
-createBtn.addEventListener("click", async () => {
-  if (!uploadedImage) {
-    alert("Selecciona una imagen primero");
-    return;
-  }
+        <Tabs
+          value={mode}
+          onValueChange={(v) => {
+            setMode(v as "edit" | "generate");
+            setResultImage(null);
+          }}
+          className="w-full"
+        >
+          <TabsList className="mx-auto grid w-full max-w-xs grid-cols-2">
+            <TabsTrigger value="edit">Edit Photo</TabsTrigger>
+            <TabsTrigger value="generate">Generate New</TabsTrigger>
+          </TabsList>
 
-  loader.style.display = "block";
-  createBtn.disabled = true;
+          {/* Edit tab */}
+          <TabsContent value="edit" className="mt-6">
+            {/* Upload area */}
+            {!uploadedImage && (
+              <Card
+                className={`relative flex min-h-[260px] cursor-pointer flex-col items-center justify-center border-2 border-dashed transition-colors ${
+                  dragActive ? "border-accent bg-accent/5" : "border-border hover:border-accent/50"
+                }`}
+                onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
+                onDragLeave={() => setDragActive(false)}
+                onDrop={onDrop}
+                onClick={() => document.getElementById("file-input")?.click()}
+              >
+                <Upload className="mb-3 h-8 w-8 text-muted-foreground" />
+                <p className="text-sm font-medium">Drop your photo here</p>
+                <p className="mt-1 text-xs text-muted-foreground">or click to browse</p>
+                <input
+                  id="file-input"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={onFileSelect}
+                />
+              </Card>
+            )}
 
-  const illustrated = await generateIllustration(uploadedImage);
-  afterImg.src = illustrated;
+            {/* Preview */}
+            {uploadedImage && (
+              <div className="space-y-4">
+                <div className={`grid gap-4 ${resultImage ? "md:grid-cols-2" : "grid-cols-1"}`}>
+                  <Card className="overflow-hidden">
+                    <p className="px-4 pt-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Original</p>
+                    <div className="p-4">
+                      <img
+                        src={uploadedImage}
+                        alt="Original"
+                        className="w-full rounded-md object-contain"
+                        style={{ maxHeight: "400px" }}
+                      />
+                    </div>
+                  </Card>
+                  {resultImage && (
+                    <Card className="overflow-hidden">
+                      <p className="px-4 pt-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Result</p>
+                      <div className="p-4">
+                        <img
+                          src={resultImage}
+                          alt="Result"
+                          className="w-full rounded-md object-contain"
+                          style={{ maxHeight: "400px" }}
+                        />
+                      </div>
+                    </Card>
+                  )}
+                </div>
 
-  loader.style.display = "none";
-  createBtn.disabled = false;
-  downloadBtn.style.display = "inline-block";
-});
+                <div className="flex flex-wrap items-center justify-center gap-3">
+                  <Button onClick={processImage} disabled={isProcessing} className="gap-2">
+                    {isProcessing ? (
+                      <RefreshCw className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Sparkles className="h-4 w-4" />
+                    )}
+                    {isProcessing ? "Transforming…" : "Transform"}
+                  </Button>
+                  {resultImage && (
+                    <Button variant="outline" onClick={downloadResult} className="gap-2">
+                      <Download className="h-4 w-4" /> Download
+                    </Button>
+                  )}
+                  <Button
+                    variant="ghost"
+                    onClick={() => { setUploadedImage(null); setResultImage(null); }}
+                  >
+                    New Photo
+                  </Button>
+                </div>
+              </div>
+            )}
+          </TabsContent>
+
+          {/* Generate tab */}
+          <TabsContent value="generate" className="mt-6">
+            <div className="space-y-4">
+              {!resultImage && !isProcessing && (
+                <Card className="flex min-h-[260px] flex-col items-center justify-center">
+                  <Sparkles className="mb-3 h-8 w-8 text-accent" />
+                  <p className="text-sm font-medium">Generate a new illustration</p>
+                  <p className="mt-1 mb-4 text-xs text-muted-foreground">
+                    Creates an elegant watercolor fashion illustration from scratch
+                  </p>
+                  <Button onClick={processImage} className="gap-2">
+                    <Sparkles className="h-4 w-4" /> Generate
+                  </Button>
+                </Card>
+              )}
+
+              {isProcessing && (
+                <Card className="flex min-h-[260px] flex-col items-center justify-center">
+                  <RefreshCw className="mb-3 h-8 w-8 animate-spin text-accent" />
+                  <p className="text-sm font-medium">Creating your illustration…</p>
+                  <p className="mt-1 text-xs text-muted-foreground">This may take a moment</p>
+                </Card>
+              )}
+
+              {resultImage && !isProcessing && (
+                <div className="space-y-4">
+                  <Card className="overflow-hidden">
+                    <p className="px-4 pt-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Generated</p>
+                    <div className="p-4">
+                      <img
+                        src={resultImage}
+                        alt="Generated illustration"
+                        className="mx-auto w-full rounded-md object-contain"
+                        style={{ maxHeight: "500px" }}
+                      />
+                    </div>
+                  </Card>
+                  <div className="flex items-center justify-center gap-3">
+                    <Button onClick={processImage} disabled={isProcessing} variant="outline" className="gap-2">
+                      <RefreshCw className="h-4 w-4" /> Regenerate
+                    </Button>
+                    <Button onClick={downloadResult} className="gap-2">
+                      <Download className="h-4 w-4" /> Download
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </TabsContent>
+        </Tabs>
+      </main>
+    </div>
+  );
+};
+
+export default Index;
 
 
-/* DESCARGAR */
-downloadBtn.addEventListener("click", () => {
-  const link = document.createElement("a");
-  link.href = afterImg.src;
-  link.download = "ilustracion-acuarela.png";
-  link.click();
-});
-</script>
-
-</body>
-</html>
 
 
 
